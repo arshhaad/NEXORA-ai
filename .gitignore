@@ -19,6 +19,7 @@ local_settings.py
 media/
 staticfiles/
 static_root/
+vector_stores/
 
 # ── Secrets — NEVER commit these ─────────────────────────
 .env

@@ -1,4 +1,0 @@
-Django>=6.0,<6.1
-djangorestframework>=3.16,<3.17
-openai>=1.0
-python-dotenv>=1.0

@@ -1,56 +1,63 @@
 # Nexora AI
 
-A Django-powered AI chat assistant with Google OAuth authentication.
+A Django-powered AI chat assistant with Google OAuth, RAG, and Gemini streaming.
 
-## Features
-- Google Sign-In (OAuth 2.0 via django-allauth)
-- Persistent chat conversations
-- AI response backend (plug in OpenAI / Gemini)
-- User settings — avatar, AI model, theme
-- Dark-themed responsive UI
+## Project structure
 
-## Stack
-- **Backend**: Django 6.x, django-allauth
-- **Database**: SQLite (dev) / PostgreSQL (prod)
-- **Auth**: Google OAuth 2.0
+```
+NEXORA/
+├── ai/          ← Python virtual environment
+├── nexora/      ← Django project (run everything from here)
+│   ├── manage.py
+│   ├── .env     ← secrets (never committed)
+│   ├── nexora/  ← Django settings, urls, wsgi
+│   └── nexora_ai/ ← main app (views, models, templates, RAG engine)
+├── .gitignore
+└── README.md
+```
+
+## Run the project
+
+```bash
+# From NEXORA/ root:
+cd nexora
+..\ai\Scripts\python.exe manage.py runserver
+```
+
+Then open http://127.0.0.1:8000
 
 ## Setup
 
 ```bash
-# 1. Create and activate venv
-python -m venv ai
-ai\Scripts\activate        # Windows
-source ai/bin/activate     # macOS/Linux
+# 1. Install dependencies (already done if venv exists)
+..\ai\Scripts\python.exe -m pip install django "django-allauth[socialaccount]==65.3.1" google-generativeai sentence-transformers faiss-cpu pypdf2 python-dotenv
 
-# 2. Install dependencies
-pip install django "django-allauth[socialaccount]==65.3.1"
+# 2. Edit nexora/.env — add your Gemini API key
+GEMINI_API_KEY=AIzaSy...
 
-# 3. Apply migrations
-cd nexora
-python manage.py migrate
+# 3. Migrate
+..\ai\Scripts\python.exe manage.py migrate
 
-# 4. Add your Google OAuth credentials in nexora/settings.py
-#    SOCIALACCOUNT_PROVIDERS > google > APP > client_id / secret
-
-# 5. Create superuser & set Site domain in admin
-python manage.py createsuperuser
-# Admin > Sites > set domain to 127.0.0.1:8000
-
-# 6. Run
-python manage.py runserver
+# 4. Run
+..\ai\Scripts\python.exe manage.py runserver
 ```
 
-## Google OAuth Setup
-1. [Google Cloud Console](https://console.cloud.google.com) → APIs & Services → Credentials
-2. Create OAuth 2.0 Client ID (Web application)
-3. Authorized redirect URI: `http://127.0.0.1:8000/accounts/google/login/callback/`
-4. Paste Client ID and Secret into `settings.py`
+## .env keys (nexora/.env)
 
-## URL Map
+| Key | Description |
+|-----|-------------|
+| `DJANGO_SECRET_KEY` | Django secret |
+| `GOOGLE_CLIENT_ID` | Google OAuth client ID |
+| `GOOGLE_CLIENT_SECRET` | Google OAuth secret |
+| `GEMINI_API_KEY` | Gemini AI key from aistudio.google.com |
+
+## URL map
+
 | URL | Page |
 |-----|------|
-| `/` | Login |
-| `/signup/` | Sign Up |
-| `/chat/` | Chat |
-| `/settings/` | Settings |
-| `/admin/` | Django Admin |
+| `/` | Landing page (home) |
+| `/login/` | Sign in with Google |
+| `/signup/` | Sign up with Google |
+| `/chat/` | AI Chat (login required) |
+| `/settings/` | User settings |
+| `/admin/` | Django admin |
