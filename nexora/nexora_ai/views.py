@@ -31,6 +31,12 @@ def get_vector_store(conv_id: int) -> ConversationVectorStore:
 
 # ── Auth ───────────────────────────────────────────────────────────────────
 
+def home_view(request):
+    """Landing page — redirects to chat if already logged in."""
+    if request.user.is_authenticated:
+        return redirect('chat')
+    return render(request, 'home.html')
+
 def login_view(request):
     if request.user.is_authenticated:
         return redirect('chat')

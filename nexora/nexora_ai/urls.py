@@ -17,5 +17,5 @@ urlpatterns = [
     # Settings
     path('settings/', views.settings_view, name='settings'),
     # Root
-    path('', views.login_view, name='home'),
+    path('', views.home_view, name='home'),
 ]
