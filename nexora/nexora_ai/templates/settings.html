@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nexora AI — Settings</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0f;
+      --surface: #0f0f1a;
+      --card: #13131f;
+      --border: rgba(255,255,255,0.08);
+      --accent: #7c3aed;
+      --text: #e2e8f0;
+      --muted: #64748b;
+    }
+
+    body {
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      display: flex;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse 70% 50% at 10% 10%, rgba(124,58,237,0.08) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    /* Sidebar nav */
+    .sidebar {
+      width: 220px;
+      min-width: 220px;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding: 20px 12px;
+      position: sticky;
+      top: 0;
+    }
+
+    .sidebar-logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 8px 20px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 16px;
+    }
+    .logo-icon {
+      width: 30px; height: 30px;
+      background: linear-gradient(135deg, var(--accent), #06b6d4);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px;
+    }
+    .logo-text { font-weight: 700; font-size: 15px; }
+    .logo-text span { background: linear-gradient(90deg, var(--accent), #06b6d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 9px 12px;
+      border-radius: 9px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      text-decoration: none;
+      margin-bottom: 2px;
+    }
+    .nav-item:hover { background: rgba(255,255,255,0.05); color: var(--text); }
+    .nav-item.active { background: rgba(124,58,237,0.15); color: var(--text); border: 1px solid rgba(124,58,237,0.2); }
+    .nav-icon { font-size: 15px; width: 18px; text-align: center; }
+
+    .sidebar-bottom { margin-top: auto; }
+    .back-btn {
+      display: flex; align-items: center; gap: 8px;
+      padding: 9px 12px;
+      border-radius: 9px;
+      color: var(--muted);
+      font-size: 13px;
+      text-decoration: none;
+      transition: background 0.15s, color 0.15s;
+    }
+    .back-btn:hover { background: rgba(255,255,255,0.05); color: var(--text); }
+
+    /* Main content */
+    .content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 36px 40px;
+    }
+    .content::-webkit-scrollbar { width: 5px; }
+    .content::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.07); border-radius: 4px; }
+
+    .page-title { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+    .page-subtitle { color: var(--muted); font-size: 14px; margin-bottom: 32px; }
+
+    /* Messages */
+    .messages { margin-bottom: 20px; }
+    .alert { padding: 12px 16px; border-radius: 10px; font-size: 14px; border: 1px solid; margin-bottom: 8px; }
+    .alert-error { background: rgba(239,68,68,0.1); border-color: rgba(239,68,68,0.3); color: #fca5a5; }
+    .alert-success { background: rgba(34,197,94,0.1); border-color: rgba(34,197,94,0.3); color: #86efac; }
+
+    /* Sections */
+    .section {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      margin-bottom: 24px;
+      overflow: hidden;
+    }
+    .section-header {
+      padding: 18px 22px 14px;
+      border-bottom: 1px solid var(--border);
+    }
+    .section-title { font-size: 15px; font-weight: 600; }
+    .section-desc { font-size: 12px; color: var(--muted); margin-top: 3px; }
+    .section-body { padding: 22px; }
+
+    /* Form elements */
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    .form-group { margin-bottom: 18px; }
+    .form-group:last-child { margin-bottom: 0; }
+    label { display: block; font-size: 13px; color: #94a3b8; margin-bottom: 8px; font-weight: 500; }
+
+    input[type="text"], input[type="email"], input[type="password"], select {
+      width: 100%;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      padding: 11px 14px;
+      color: var(--text);
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      font-family: inherit;
+    }
+    select option { background: #1e1e2e; }
+    input:focus, select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(124,58,237,0.12); }
+    input[readonly] { opacity: 0.5; cursor: not-allowed; }
+
+    /* Avatar preview */
+    .avatar-row { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
+    .avatar-preview {
+      width: 54px; height: 54px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
+      font-weight: 700;
+      color: #fff;
+      transition: background 0.2s;
+    }
+    .color-options { display: flex; gap: 8px; flex-wrap: wrap; }
+    .color-swatch {
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: border-color 0.15s, transform 0.15s;
+    }
+    .color-swatch:hover { transform: scale(1.15); }
+    .color-swatch.selected { border-color: #fff; }
+
+    /* Model cards */
+    .model-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .model-card {
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      padding: 14px;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .model-card:hover { background: rgba(255,255,255,0.03); }
+    .model-card.selected { border-color: var(--accent); background: rgba(124,58,237,0.08); }
+    .model-card input[type="radio"] { display: none; }
+    .model-name { font-size: 13px; font-weight: 600; }
+    .model-desc { font-size: 11px; color: var(--muted); margin-top: 4px; }
+    .model-badge-sm { font-size: 10px; background: rgba(124,58,237,0.15); color: #a78bfa; padding: 2px 7px; border-radius: 10px; display: inline-block; margin-top: 6px; }
+
+    /* Theme toggle */
+    .theme-options { display: flex; gap: 12px; }
+    .theme-btn {
+      flex: 1;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px;
+      cursor: pointer;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 500;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .theme-btn:hover { background: rgba(255,255,255,0.03); }
+    .theme-btn.selected { border-color: var(--accent); background: rgba(124,58,237,0.08); }
+    .theme-btn input { display: none; }
+    .theme-icon { font-size: 20px; display: block; margin-bottom: 5px; }
+
+    /* Buttons */
+    .btn { padding: 10px 18px; border-radius: 9px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; transition: opacity 0.2s, transform 0.1s; font-family: inherit; }
+    .btn:hover { opacity: 0.85; transform: translateY(-1px); }
+    .btn-primary { background: linear-gradient(135deg, var(--accent), #6d28d9); color: #fff; }
+    .btn-ghost { background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--text); }
+    .btn-danger { background: rgba(239,68,68,0.12); border: 1px solid rgba(239,68,68,0.3); color: #fca5a5; }
+    .btn-danger:hover { background: rgba(239,68,68,0.2); }
+
+    .form-footer { display: flex; justify-content: flex-end; gap: 10px; margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--border); }
+
+    /* Danger zone */
+    .danger-row { display: flex; justify-content: space-between; align-items: center; }
+    .danger-info .danger-title { font-size: 14px; font-weight: 500; color: #fca5a5; }
+    .danger-info .danger-desc { font-size: 12px; color: var(--muted); margin-top: 3px; }
+
+    @media (max-width: 680px) {
+      .form-row, .model-cards { grid-template-columns: 1fr; }
+      .content { padding: 24px 18px; }
+      .sidebar { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">✦</div>
+      <div class="logo-text"><span>Nexora</span> AI</div>
+    </div>
+
+    <a href="#profile" class="nav-item active">
+      <span class="nav-icon">👤</span> Profile
+    </a>
+    <a href="#ai-model" class="nav-item">
+      <span class="nav-icon">🤖</span> AI Model
+    </a>
+    <a href="#appearance" class="nav-item">
+      <span class="nav-icon">🎨</span> Appearance
+    </a>
+    <a href="#security" class="nav-item">
+      <span class="nav-icon">🔒</span> Security
+    </a>
+    <a href="#danger" class="nav-item">
+      <span class="nav-icon">⚠</span> Danger Zone
+    </a>
+
+    <div class="sidebar-bottom">
+      <a href="{% url 'chat' %}" class="back-btn">← Back to Chat</a>
+    </div>
+  </nav>
+
+  <!-- Content -->
+  <main class="content">
+    <h1 class="page-title">Settings</h1>
+    <p class="page-subtitle">Manage your account preferences and AI configuration.</p>
+
+    {% if messages %}
+    <div class="messages">
+      {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Profile Section -->
+    <div class="section" id="profile">
+      <div class="section-header">
+        <div class="section-title">Profile</div>
+        <div class="section-desc">Update your display name, email, and avatar.</div>
+      </div>
+      <div class="section-body">
+        <form method="post" action="{% url 'settings' %}">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="update_profile" />
+          <input type="hidden" name="avatar_color" id="selectedColor" value="{{ profile.avatar_color }}" />
+          <input type="hidden" name="ai_model" id="selectedModel" value="{{ profile.ai_model }}" />
+          <input type="hidden" name="theme" id="selectedTheme" value="{{ profile.theme }}" />
+
+          <!-- Avatar -->
+          <div class="avatar-row">
+            <div class="avatar-preview" id="avatarPreview" style="background:{{ profile.avatar_color }};">
+              {{ request.user.username|first|upper }}
+            </div>
+            <div>
+              <label style="margin-bottom:10px;">Avatar Color</label>
+              <div class="color-options">
+                {% for color in avatar_colors %}
+                <div class="color-swatch {% if color == profile.avatar_color %}selected{% endif %}"
+                  style="background:{{ color }};"
+                  data-color="{{ color }}"
+                  onclick="selectColor(this)"></div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="username">Username</label>
+              <input type="text" id="username" value="{{ request.user.username }}" readonly />
+            </div>
+            <div class="form-group">
+              <label for="email">Email Address</label>
+              <input type="email" id="email" name="email" value="{{ request.user.email }}" placeholder="your@email.com" />
+            </div>
+          </div>
+
+          <!-- AI Model -->
+          <div class="form-group" id="ai-model">
+            <label>AI Model</label>
+            <div class="model-cards">
+              <label class="model-card {% if profile.ai_model == 'nexora-1' %}selected{% endif %}" onclick="selectModel(this, 'nexora-1')">
+                <input type="radio" name="ai_model_radio" value="nexora-1" {% if profile.ai_model == 'nexora-1' %}checked{% endif %} />
+                <div class="model-name">Nexora 1</div>
+                <div class="model-desc">Fast, efficient, great for everyday tasks.</div>
+                <span class="model-badge-sm">Default</span>
+              </label>
+              <label class="model-card {% if profile.ai_model == 'nexora-pro' %}selected{% endif %}" onclick="selectModel(this, 'nexora-pro')">
+                <input type="radio" name="ai_model_radio" value="nexora-pro" {% if profile.ai_model == 'nexora-pro' %}checked{% endif %} />
+                <div class="model-name">Nexora Pro</div>
+                <div class="model-desc">Advanced reasoning and deeper analysis.</div>
+                <span class="model-badge-sm">Pro</span>
+              </label>
+              <label class="model-card {% if profile.ai_model == 'nexora-ultra' %}selected{% endif %}" onclick="selectModel(this, 'nexora-ultra')">
+                <input type="radio" name="ai_model_radio" value="nexora-ultra" {% if profile.ai_model == 'nexora-ultra' %}checked{% endif %} />
+                <div class="model-name">Nexora Ultra</div>
+                <div class="model-desc">Maximum power for complex problems.</div>
+                <span class="model-badge-sm">Ultra</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Appearance -->
+          <div class="form-group" id="appearance">
+            <label>Theme</label>
+            <div class="theme-options">
+              <label class="theme-btn {% if profile.theme == 'dark' %}selected{% endif %}" onclick="selectTheme(this, 'dark')">
+                <input type="radio" name="theme_radio" value="dark" {% if profile.theme == 'dark' %}checked{% endif %} />
+                <span class="theme-icon">🌙</span> Dark
+              </label>
+              <label class="theme-btn {% if profile.theme == 'light' %}selected{% endif %}" onclick="selectTheme(this, 'light')">
+                <input type="radio" name="theme_radio" value="light" {% if profile.theme == 'light' %}checked{% endif %} />
+                <span class="theme-icon">☀️</span> Light
+              </label>
+            </div>
+          </div>
+
+          <div class="form-footer">
+            <button type="button" class="btn btn-ghost" onclick="location.href='{% url 'chat' %}'">Cancel</button>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Security Section -->
+    <div class="section" id="security">
+      <div class="section-header">
+        <div class="section-title">Security</div>
+        <div class="section-desc">Change your password to keep your account safe.</div>
+      </div>
+      <div class="section-body">
+        <form method="post" action="{% url 'settings' %}">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="change_password" />
+          <div class="form-group">
+            <label for="old_password">Current Password</label>
+            <input type="password" id="old_password" name="old_password" placeholder="Enter current password" required autocomplete="current-password" />
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="new_password">New Password</label>
+              <input type="password" id="new_password" name="new_password" placeholder="Min. 8 characters" required autocomplete="new-password" />
+            </div>
+            <div class="form-group">
+              <label for="confirm_password">Confirm New Password</label>
+              <input type="password" id="confirm_password" name="confirm_password" placeholder="Repeat new password" required autocomplete="new-password" />
+            </div>
+          </div>
+          <div class="form-footer">
+            <button type="submit" class="btn btn-primary">Update Password</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Danger Zone -->
+    <div class="section" id="danger" style="border-color: rgba(239,68,68,0.2);">
+      <div class="section-header" style="border-color: rgba(239,68,68,0.15);">
+        <div class="section-title" style="color:#fca5a5;">Danger Zone</div>
+        <div class="section-desc">These actions are irreversible. Please be certain.</div>
+      </div>
+      <div class="section-body">
+        <div class="danger-row">
+          <div class="danger-info">
+            <div class="danger-title">Delete Account</div>
+            <div class="danger-desc">Permanently delete your account, all conversations, and data.</div>
+          </div>
+          <form method="post" action="{% url 'settings' %}" onsubmit="return confirm('This will permanently delete your account and ALL data. This cannot be undone. Are you absolutely sure?')">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="delete_account" />
+            <button type="submit" class="btn btn-danger">Delete Account</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // Color swatch selection
+    function selectColor(el) {
+      document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
+      el.classList.add('selected');
+      const color = el.dataset.color;
+      document.getElementById('selectedColor').value = color;
+      document.getElementById('avatarPreview').style.background = color;
+    }
+
+    // Model card selection
+    function selectModel(el, value) {
+      document.querySelectorAll('.model-card').forEach(c => c.classList.remove('selected'));
+      el.classList.add('selected');
+      document.getElementById('selectedModel').value = value;
+    }
+
+    // Theme selection
+    function selectTheme(el, value) {
+      document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('selected'));
+      el.classList.add('selected');
+      document.getElementById('selectedTheme').value = value;
+    }
+
+    // Sidebar highlight on scroll
+    const sections = document.querySelectorAll('.section[id]');
+    const navItems = document.querySelectorAll('.nav-item[href^="#"]');
+    window.addEventListener('scroll', () => {
+      let current = '';
+      sections.forEach(s => {
+        if (window.scrollY + 120 >= s.offsetTop) current = s.id;
+      });
+      navItems.forEach(n => {
+        n.classList.toggle('active', n.getAttribute('href') === '#' + current);
+      });
+    }, { passive: true });
+  </script>
+</body>
+</html>
