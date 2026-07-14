@@ -124,6 +124,18 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+# Media files (uploaded documents)
+import os
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+# ── Nexora AI ─────────────────────────────────────────────────────────────
+# Get your free Gemini API key at: https://aistudio.google.com/app/apikey
+GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY', 'YOUR_GEMINI_API_KEY')
+
+# FAISS vector store directory
+VECTOR_STORE_DIR = BASE_DIR / 'vector_stores'
+
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 

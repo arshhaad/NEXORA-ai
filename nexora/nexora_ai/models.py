@@ -4,13 +4,13 @@ from django.contrib.auth.models import User
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
-    avatar_color = models.CharField(max_length=7, default='#7c3aed')  # hex color
+    avatar_color = models.CharField(max_length=7, default='#7c3aed')
     ai_model = models.CharField(
         max_length=50,
         default='nexora-1',
         choices=[
-            ('nexora-1', 'Nexora 1'),
-            ('nexora-pro', 'Nexora Pro'),
+            ('nexora-1',     'Nexora 1 (Flash)'),
+            ('nexora-pro',   'Nexora Pro'),
             ('nexora-ultra', 'Nexora Ultra'),
         ]
     )
@@ -51,3 +51,20 @@ class Message(models.Model):
 
     def __str__(self):
         return f"[{self.role}] {self.content[:60]}"
+
+
+def document_upload_path(instance, filename):
+    return f"documents/{instance.conversation.user.id}/{instance.conversation.id}/{filename}"
+
+
+class Document(models.Model):
+    """Uploaded file attached to a conversation for RAG."""
+    conversation = models.ForeignKey(Conversation, on_delete=models.CASCADE, related_name='documents')
+    file = models.FileField(upload_to=document_upload_path)
+    filename = models.CharField(max_length=255)
+    file_size = models.PositiveIntegerField(default=0)   # bytes
+    indexed = models.BooleanField(default=False)
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.filename} → conv#{self.conversation.id}"
