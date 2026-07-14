@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <!-- Main gradient: purple → cyan like Apple Settings gradient icons -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"   stop-color="#8b5cf6"/>
+      <stop offset="50%"  stop-color="#7c3aed"/>
+      <stop offset="100%" stop-color="#06b6d4"/>
+    </linearGradient>
+    <!-- Inner glow -->
+    <radialGradient id="glow" cx="40%" cy="35%" r="60%">
+      <stop offset="0%"   stop-color="#ffffff" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <!-- Drop shadow filter -->
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="16" flood-color="#7c3aed" flood-opacity="0.5"/>
+    </filter>
+    <!-- Clip to squircle -->
+    <clipPath id="squircle">
+      <rect width="512" height="512" rx="115" ry="115"/>
+    </clipPath>
+  </defs>
+
+  <!-- Squircle background -->
+  <rect width="512" height="512" rx="115" ry="115" fill="url(#bgGrad)" filter="url(#shadow)"/>
+
+  <!-- Subtle glass highlight overlay -->
+  <rect width="512" height="512" rx="115" ry="115" fill="url(#glow)"/>
+
+  <!-- Thin inner border for depth -->
+  <rect x="2" y="2" width="508" height="508" rx="114" ry="114"
+        fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="2"/>
+
+  <!-- ✦ Sparkle / four-pointed star — the Nexora symbol -->
+  <!-- Drawn as two overlapping diamonds for a clean 4-point star -->
+  <g transform="translate(256,256)" clip-path="url(#squircle)">
+    <!-- Vertical diamond (tall) -->
+    <polygon points="0,-142  28,-28  0,142  -28,-28"
+             fill="white" opacity="0.95"/>
+    <!-- Horizontal diamond (wide) -->
+    <polygon points="-142,0  -28,28  142,0  -28,-28"
+             fill="white" opacity="0.95"/>
+    <!-- Center dot to sharpen intersection -->
+    <circle cx="0" cy="0" r="18" fill="white"/>
+    <!-- Small accent sparkle top-right -->
+    <g transform="translate(104,-104) scale(0.38)">
+      <polygon points="0,-80  16,-16  0,80  -16,-16" fill="white" opacity="0.6"/>
+      <polygon points="-80,0  -16,16  80,0  -16,-16" fill="white" opacity="0.6"/>
+    </g>
+  </g>
+</svg>

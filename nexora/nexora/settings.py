@@ -95,7 +95,8 @@ USE_TZ        = True
 
 
 # ── Static & media ────────────────────────────────────────────────────────
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATICFILES_DIRS = []   # app-level static dirs discovered via APP_DIRS=True
 MEDIA_URL  = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 

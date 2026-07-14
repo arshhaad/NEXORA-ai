@@ -1,9 +1,11 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Nexora AI — Create Account</title>
+  <link rel="icon" type="image/svg+xml" href="{% static 'nexora_ai/img/favicon.svg' %}"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -140,7 +142,7 @@
   <div class="blob blob-2"></div>
 
   <div class="card">
-    <div class="logo-wrap">✦</div>
+    <div class="logo-wrap"><img src="{% static 'nexora_ai/img/logo.svg' %}" alt="Nexora" style="width:64px;height:64px;border-radius:16px;display:block;box-shadow:0 0 30px rgba(124,58,237,0.4);"/></div>
     <h1>Join <span>Nexora AI</span></h1>
     <p class="subtitle">Create your free account in seconds — just one click with Google. No forms, no passwords.</p>
 
